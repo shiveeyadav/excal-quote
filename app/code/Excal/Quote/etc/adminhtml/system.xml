@@ -1,0 +1,125 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Config:etc/system_file.xsd">
+    <system>
+        <tab id="excalibur" translate="label" sortOrder="900">
+            <label>Excalibur</label>
+        </tab>
+        <section id="excal_quote" translate="label" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+            <class>separator-top</class>
+            <label>Quotations</label>
+            <tab>excalibur</tab>
+            <resource>Excal_Quote::config</resource>
+            <group id="general" translate="label" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>General</label>
+                <field id="enabled" translate="label comment" type="select" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Enable Official Quotations</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <comment>Shows "Get an official quotation" on the basket page and enables /quote/request and /quote/view/id/...</comment>
+                </field>
+                <field id="minicart_link" translate="label" type="select" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Show Link in Mini-cart</label>
+                    <source_model>Magento\Config\Model\Config\Source\Yesno</source_model>
+                    <depends>
+                        <field id="enabled">1</field>
+                    </depends>
+                </field>
+                <field id="owner_email" translate="label comment" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Send Owner Copy To</label>
+                    <validate>validate-email</validate>
+                    <comment>Leave empty to use the supplier email below. If both are empty no owner copy is sent (logged).</comment>
+                </field>
+                <field id="sender_identity" translate="label" type="select" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Email Sender</label>
+                    <source_model>Magento\Config\Model\Config\Source\Email\Identity</source_model>
+                </field>
+                <field id="customer_template" translate="label comment" type="select" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Customer Email Template</label>
+                    <comment>Email template chosen based on theme fallback when "Default" option is selected.</comment>
+                    <source_model>Magento\Config\Model\Config\Source\Email\Template</source_model>
+                </field>
+                <field id="owner_template" translate="label comment" type="select" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Owner Copy Email Template</label>
+                    <comment>Email template chosen based on theme fallback when "Default" option is selected.</comment>
+                    <source_model>Magento\Config\Model\Config\Source\Email\Template</source_model>
+                </field>
+                <field id="max_per_hour" translate="label comment" type="text" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Max Requests per Visitor Session per Hour</label>
+                    <validate>validate-digits</validate>
+                    <comment>Basic abuse protection. 0 = unlimited.</comment>
+                </field>
+            </group>
+            <group id="pricing" translate="label" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Pricing</label>
+                <comment>Delivery is taken from Sales > Delivery Methods > Flat Rate (price, per order/per item, handling fee). If Flat Rate is disabled, delivery is quoted as 0.00.</comment>
+                <field id="vat_rate" translate="label comment" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>VAT Rate (%)</label>
+                    <validate>required-entry validate-zero-or-greater validate-number</validate>
+                    <comment>Applied to goods and delivery. Product prices in the basket are taken excluding VAT.</comment>
+                </field>
+                <field id="validity_days" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Quotation Valid For (days)</label>
+                    <validate>required-entry validate-greater-than-zero validate-digits</validate>
+                </field>
+            </group>
+            <group id="supplier" translate="label comment" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                <label>Supplier Details (printed on the quotation)</label>
+                <comment>Anything left empty prints as a red [NOT SET: ...] marker. Enter only verified company data.</comment>
+                <field id="legal_name" translate="label" type="text" sortOrder="10" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Legal Company Name</label>
+                </field>
+                <field id="trading_name" translate="label" type="text" sortOrder="20" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Trading Name</label>
+                </field>
+                <field id="company_number" translate="label" type="text" sortOrder="30" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Company Number</label>
+                </field>
+                <field id="vat_number" translate="label" type="text" sortOrder="40" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>VAT Registration Number</label>
+                </field>
+                <field id="registered_address" translate="label" type="textarea" sortOrder="50" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Registered Office Address</label>
+                </field>
+                <field id="phone" translate="label" type="text" sortOrder="60" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Phone</label>
+                </field>
+                <field id="email" translate="label" type="text" sortOrder="70" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Email</label>
+                    <validate>validate-email</validate>
+                </field>
+                <field id="logo" translate="label comment" type="image" sortOrder="80" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Logo</label>
+                    <backend_model>Magento\Config\Model\Config\Backend\Image</backend_model>
+                    <upload_dir config="system/filesystem/media" scope_info="1">excal_quote/logo</upload_dir>
+                    <base_url type="media" scope_info="1">excal_quote/logo</base_url>
+                    <comment>PNG/JPG/GIF. Printed top-left on the quotation.</comment>
+                </field>
+                <field id="bank_name" translate="label" type="text" sortOrder="90" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Bank Name</label>
+                </field>
+                <field id="bank_account_name" translate="label" type="text" sortOrder="100" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Bank Account Name</label>
+                </field>
+                <field id="bank_sort_code" translate="label" type="text" sortOrder="110" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Sort Code</label>
+                </field>
+                <field id="bank_account_number" translate="label" type="text" sortOrder="120" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Account Number</label>
+                </field>
+                <field id="bank_iban" translate="label" type="text" sortOrder="130" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>IBAN</label>
+                </field>
+                <field id="bank_bic" translate="label" type="text" sortOrder="140" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>BIC / SWIFT</label>
+                </field>
+                <field id="payment_terms" translate="label comment" type="text" sortOrder="150" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Payment Terms</label>
+                    <comment>Printed exactly as entered, e.g. your agreed invoice terms for public-sector accounts.</comment>
+                </field>
+                <field id="terms_text" translate="label" type="textarea" sortOrder="160" showInDefault="1" showInWebsite="1" showInStore="1">
+                    <label>Terms and Conditions Text</label>
+                </field>
+            </group>
+        </section>
+    </system>
+</config>

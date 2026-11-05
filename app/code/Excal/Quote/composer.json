@@ -1,0 +1,13 @@
+{
+    "name": "excal/module-quote",
+    "description": "Official supplier quotations (cart to printable quote) for excaliburlabware.com",
+    "type": "magento2-module",
+    "license": "proprietary",
+    "require": {
+        "php": ">=8.2"
+    },
+    "autoload": {
+        "files": ["registration.php"],
+        "psr-4": {"Excal\\Quote\\": ""}
+    }
+}

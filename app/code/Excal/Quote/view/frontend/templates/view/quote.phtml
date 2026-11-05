@@ -1,0 +1,202 @@
+<?php
+/**
+ * Printable official quotation (A4).
+ *
+ * @var \Magento\Framework\View\Element\Template $block
+ * @var \Magento\Framework\Escaper $escaper
+ * @var \Excal\Quote\ViewModel\QuoteView $viewModel
+ */
+$viewModel = $block->getData('view_model');
+$quote = $viewModel->getQuote();
+if ($quote === null) {
+    return;
+}
+/**
+ * Escaped supplier value, or a red NOT SET marker. Never substitutes invented data.
+ */
+$supplier = static function (string $field, bool $multiline = false) use ($viewModel, $quote, $escaper): string {
+    $value = $viewModel->getSupplier($quote, $field);
+    if ($value === '') {
+        return '<span class="excal-quote-notset">'
+            . $escaper->escapeHtml('[NOT SET: ' . $viewModel->getSupplierLabel($field) . ']')
+            . '</span>';
+    }
+    $html = $escaper->escapeHtml($value);
+    return $multiline ? nl2br($html) : $html;
+};
+$text = static function ($value) use ($escaper): string {
+    return nl2br($escaper->escapeHtml((string)$value));
+};
+$items = $viewModel->getItems($quote);
+$logoUrl = $viewModel->getLogoUrl($quote);
+$expired = $viewModel->isExpired($quote);
+$number = (string)$quote->getData('quote_number');
+?>
+<div class="excal-quote-toolbar no-print">
+    <button type="button" class="action primary excal-quote-print" data-mage-init='{"Excal_Quote/js/print":{}}'>
+        <span><?= $escaper->escapeHtml(__('Download PDF / Print')) ?></span>
+    </button>
+    <span class="excal-quote-toolbar-hint">
+        <?= $escaper->escapeHtml(__('Choose "Save as PDF" as the printer to download a PDF. Keep this link: it is your copy of the quotation.')) ?>
+    </span>
+</div>
+
+<article class="excal-quote-doc">
+    <?php if ($expired): ?>
+        <div class="excal-quote-banner excal-quote-banner-expired">
+            <?= $escaper->escapeHtml(__('This quotation has expired. Please request a new quotation.')) ?>
+        </div>
+    <?php elseif ($quote->getData('status') === \Excal\Quote\Model\Quote::STATUS_CONVERTED): ?>
+        <div class="excal-quote-banner">
+            <?= $escaper->escapeHtml(__('This quotation has been converted to an order.')) ?>
+        </div>
+    <?php endif; ?>
+
+    <header class="excal-quote-head">
+        <div class="excal-quote-logo">
+            <?php if ($logoUrl !== ''): ?>
+                <img src="<?= $escaper->escapeUrl($logoUrl) ?>"
+                     alt="<?= $escaper->escapeHtmlAttr($viewModel->getSupplier($quote, 'trading_name')) ?>"/>
+            <?php else: ?>
+                <span class="excal-quote-notset"><?= $escaper->escapeHtml('[NOT SET: Logo]') ?></span>
+            <?php endif; ?>
+        </div>
+        <div class="excal-quote-supplier">
+            <div class="excal-quote-supplier-name"><?= /* @noEscape */ $supplier('trading_name') ?></div>
+            <div><?= /* @noEscape */ $supplier('legal_name') ?></div>
+            <div><?= /* @noEscape */ $supplier('registered_address', true) ?></div>
+            <div><?= $escaper->escapeHtml(__('Tel')) ?>: <?= /* @noEscape */ $supplier('phone') ?></div>
+            <div><?= $escaper->escapeHtml(__('Email')) ?>: <?= /* @noEscape */ $supplier('email') ?></div>
+            <div><?= $escaper->escapeHtml(__('VAT No.')) ?>: <?= /* @noEscape */ $supplier('vat_number') ?></div>
+            <div><?= $escaper->escapeHtml(__('Company No.')) ?>: <?= /* @noEscape */ $supplier('company_number') ?></div>
+        </div>
+    </header>
+
+    <h1 class="excal-quote-title"><?= $escaper->escapeHtml(__('Quotation')) ?></h1>
+
+    <section class="excal-quote-meta">
+        <table>
+            <tr>
+                <th scope="row"><?= $escaper->escapeHtml(__('Quotation number')) ?></th>
+                <td><strong><?= $escaper->escapeHtml($number) ?></strong></td>
+            </tr>
+            <tr>
+                <th scope="row"><?= $escaper->escapeHtml(__('Date')) ?></th>
+                <td><?= $escaper->escapeHtml($viewModel->formatDate((string)$quote->getData('created_at'), true)) ?></td>
+            </tr>
+            <tr>
+                <th scope="row"><?= $escaper->escapeHtml(__('Valid until')) ?></th>
+                <td><?= $escaper->escapeHtml($viewModel->formatDate((string)$quote->getData('valid_until'))) ?></td>
+            </tr>
+            <?php if ((string)$quote->getData('customer_reference') !== ''): ?>
+                <tr>
+                    <th scope="row"><?= $escaper->escapeHtml(__('Your reference')) ?></th>
+                    <td><?= $escaper->escapeHtml((string)$quote->getData('customer_reference')) ?></td>
+                </tr>
+            <?php endif; ?>
+        </table>
+    </section>
+
+    <section class="excal-quote-parties">
+        <div>
+            <h2><?= $escaper->escapeHtml(__('Prepared for')) ?></h2>
+            <div><strong><?= $escaper->escapeHtml((string)$quote->getData('organisation')) ?></strong></div>
+            <?php if ((string)$quote->getData('department') !== ''): ?>
+                <div><?= $escaper->escapeHtml((string)$quote->getData('department')) ?></div>
+            <?php endif; ?>
+            <div><?= $escaper->escapeHtml((string)$quote->getData('contact_name')) ?></div>
+            <div><?= $escaper->escapeHtml((string)$quote->getData('email')) ?></div>
+            <div><?= $escaper->escapeHtml((string)$quote->getData('phone')) ?></div>
+        </div>
+        <div>
+            <h2><?= $escaper->escapeHtml(__('Billing address')) ?></h2>
+            <div><?= /* @noEscape */ $text($quote->getData('billing_address')) ?></div>
+        </div>
+        <div>
+            <h2><?= $escaper->escapeHtml(__('Delivery address')) ?></h2>
+            <div><?= /* @noEscape */ $text($quote->getData('delivery_address')) ?></div>
+        </div>
+    </section>
+
+    <table class="excal-quote-items">
+        <thead>
+        <tr>
+            <th scope="col"><?= $escaper->escapeHtml(__('SKU')) ?></th>
+            <th scope="col"><?= $escaper->escapeHtml(__('Description')) ?></th>
+            <th scope="col" class="num"><?= $escaper->escapeHtml(__('Qty')) ?></th>
+            <th scope="col" class="num"><?= $escaper->escapeHtml(__('Unit price (ex VAT)')) ?></th>
+            <th scope="col" class="num"><?= $escaper->escapeHtml(__('Line total (ex VAT)')) ?></th>
+        </tr>
+        </thead>
+        <tbody>
+        <?php foreach ($items as $item): ?>
+            <tr>
+                <td><?= $escaper->escapeHtml((string)$item->getData('sku')) ?></td>
+                <td><?= $escaper->escapeHtml((string)$item->getData('name')) ?></td>
+                <td class="num"><?= $escaper->escapeHtml($viewModel->formatQty($item->getData('qty'))) ?></td>
+                <td class="num"><?= $escaper->escapeHtml($viewModel->formatPrice($quote, $item->getData('unit_price'))) ?></td>
+                <td class="num"><?= $escaper->escapeHtml($viewModel->formatPrice($quote, $item->getData('line_total'))) ?></td>
+            </tr>
+        <?php endforeach; ?>
+        </tbody>
+        <tfoot>
+        <tr>
+            <th colspan="4" scope="row"><?= $escaper->escapeHtml(__('Goods subtotal (ex VAT)')) ?></th>
+            <td class="num"><?= $escaper->escapeHtml($viewModel->formatPrice($quote, $quote->getData('subtotal'))) ?></td>
+        </tr>
+        <tr>
+            <th colspan="4" scope="row"><?= $escaper->escapeHtml(__('Delivery (ex VAT)')) ?></th>
+            <td class="num"><?= $escaper->escapeHtml($viewModel->formatPrice($quote, $quote->getData('delivery_amount'))) ?></td>
+        </tr>
+        <tr>
+            <th colspan="4" scope="row"><?= $escaper->escapeHtml(__('VAT at %1%', $viewModel->formatRate($quote))) ?></th>
+            <td class="num"><?= $escaper->escapeHtml($viewModel->formatPrice($quote, $quote->getData('vat_amount'))) ?></td>
+        </tr>
+        <tr class="grand">
+            <th colspan="4" scope="row">
+                <?= $escaper->escapeHtml(__('Total (inc VAT) %1', (string)$quote->getData('currency_code'))) ?>
+            </th>
+            <td class="num"><?= $escaper->escapeHtml($viewModel->formatPrice($quote, $quote->getData('grand_total'))) ?></td>
+        </tr>
+        </tfoot>
+    </table>
+
+    <?php if ((string)$quote->getData('notes') !== ''): ?>
+        <section class="excal-quote-notes">
+            <h2><?= $escaper->escapeHtml(__('Customer notes')) ?></h2>
+            <p><?= /* @noEscape */ $text($quote->getData('notes')) ?></p>
+        </section>
+    <?php endif; ?>
+
+    <section class="excal-quote-ordering">
+        <h2><?= $escaper->escapeHtml(__('How to order')) ?></h2>
+        <p>
+            <?= $escaper->escapeHtml(__(
+                'Please quote %1 on your purchase order and send it to',
+                $number
+            )) ?>
+            <?= /* @noEscape */ $supplier('email') ?>.
+        </p>
+        <p><strong><?= $escaper->escapeHtml(__('Payment terms')) ?>:</strong> <?= /* @noEscape */ $supplier('payment_terms') ?></p>
+        <table class="excal-quote-bank">
+            <tr><th scope="row"><?= $escaper->escapeHtml(__('Bank')) ?></th><td><?= /* @noEscape */ $supplier('bank_name') ?></td></tr>
+            <tr><th scope="row"><?= $escaper->escapeHtml(__('Account name')) ?></th><td><?= /* @noEscape */ $supplier('bank_account_name') ?></td></tr>
+            <tr><th scope="row"><?= $escaper->escapeHtml(__('Sort code')) ?></th><td><?= /* @noEscape */ $supplier('bank_sort_code') ?></td></tr>
+            <tr><th scope="row"><?= $escaper->escapeHtml(__('Account number')) ?></th><td><?= /* @noEscape */ $supplier('bank_account_number') ?></td></tr>
+            <tr><th scope="row"><?= $escaper->escapeHtml(__('IBAN')) ?></th><td><?= /* @noEscape */ $supplier('bank_iban') ?></td></tr>
+            <tr><th scope="row"><?= $escaper->escapeHtml(__('BIC / SWIFT')) ?></th><td><?= /* @noEscape */ $supplier('bank_bic') ?></td></tr>
+        </table>
+    </section>
+
+    <section class="excal-quote-terms">
+        <h2><?= $escaper->escapeHtml(__('Terms and conditions')) ?></h2>
+        <div><?= /* @noEscape */ $supplier('terms_text', true) ?></div>
+    </section>
+
+    <footer class="excal-quote-foot">
+        <?= /* @noEscape */ $supplier('legal_name') ?>
+        &middot; <?= $escaper->escapeHtml(__('Company No.')) ?> <?= /* @noEscape */ $supplier('company_number') ?>
+        &middot; <?= $escaper->escapeHtml(__('VAT No.')) ?> <?= /* @noEscape */ $supplier('vat_number') ?>
+        <br/><?= $escaper->escapeHtml(__('Registered office')) ?>: <?= /* @noEscape */ $supplier('registered_address') ?>
+    </footer>
+</article>

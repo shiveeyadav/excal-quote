@@ -1,0 +1,60 @@
+<!--@subject {{trans "New quotation request %number from %organisation" number=$quote_data.quote_number organisation=$quote_data.organisation}} @-->
+<!--@vars {
+"var quote_data.quote_number":"Quotation number",
+"var quote_data.organisation":"Organisation",
+"var quote_data.department":"Department",
+"var quote_data.contact_name":"Contact name",
+"var quote_data.email":"Email",
+"var quote_data.phone":"Phone",
+"var quote_data.billing_address":"Billing address",
+"var quote_data.delivery_address":"Delivery address",
+"var quote_data.customer_reference":"Customer reference",
+"var quote_data.notes":"Notes",
+"var quote_data.total":"Total inc VAT",
+"var view_url":"Quotation URL",
+"var items_html|raw":"Items rows"
+} @-->
+{{template config_path="design/email/header_template"}}
+
+<table>
+    <tr class="email-intro">
+        <td>
+            <p>{{trans "A new official quotation has been created on the website."}}</p>
+            <p><a href="{{var view_url}}" style="font-weight:bold">{{trans "Open quotation %number" number=$quote_data.quote_number}}</a></p>
+        </td>
+    </tr>
+    <tr class="email-information">
+        <td>
+            <table style="width:100%;border-collapse:collapse">
+                <tr><th style="text-align:left;padding:2px 8px 2px 0">{{trans "Organisation"}}</th><td>{{var quote_data.organisation}}</td></tr>
+                <tr><th style="text-align:left;padding:2px 8px 2px 0">{{trans "Department"}}</th><td>{{var quote_data.department}}</td></tr>
+                <tr><th style="text-align:left;padding:2px 8px 2px 0">{{trans "Contact"}}</th><td>{{var quote_data.contact_name}}</td></tr>
+                <tr><th style="text-align:left;padding:2px 8px 2px 0">{{trans "Email"}}</th><td>{{var quote_data.email}}</td></tr>
+                <tr><th style="text-align:left;padding:2px 8px 2px 0">{{trans "Phone"}}</th><td>{{var quote_data.phone}}</td></tr>
+                <tr><th style="text-align:left;padding:2px 8px 2px 0">{{trans "Billing address"}}</th><td>{{var quote_data.billing_address|escape|nl2br}}</td></tr>
+                <tr><th style="text-align:left;padding:2px 8px 2px 0">{{trans "Delivery address"}}</th><td>{{var quote_data.delivery_address|escape|nl2br}}</td></tr>
+                <tr><th style="text-align:left;padding:2px 8px 2px 0">{{trans "Reference / PO"}}</th><td>{{var quote_data.customer_reference}}</td></tr>
+                <tr><th style="text-align:left;padding:2px 8px 2px 0">{{trans "Notes"}}</th><td>{{var quote_data.notes|escape|nl2br}}</td></tr>
+            </table>
+            <table style="width:100%;border-collapse:collapse;margin-top:10px">
+                <thead>
+                <tr>
+                    <th style="text-align:left;padding:4px">{{trans "SKU"}}</th>
+                    <th style="text-align:left;padding:4px">{{trans "Product"}}</th>
+                    <th style="text-align:right;padding:4px">{{trans "Qty"}}</th>
+                    <th style="text-align:right;padding:4px">{{trans "Unit (ex VAT)"}}</th>
+                    <th style="text-align:right;padding:4px">{{trans "Total (ex VAT)"}}</th>
+                </tr>
+                </thead>
+                <tbody>
+                {{var items_html|raw}}
+                </tbody>
+            </table>
+            <p style="text-align:right">
+                {{trans "Subtotal %subtotal + delivery %delivery + VAT %vat = %total" subtotal=$quote_data.subtotal delivery=$quote_data.delivery vat=$quote_data.vat total=$quote_data.total}}
+            </p>
+        </td>
+    </tr>
+</table>
+
+{{template config_path="design/email/footer_template"}}

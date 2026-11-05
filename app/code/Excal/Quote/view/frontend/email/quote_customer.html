@@ -1,0 +1,50 @@
+<!--@subject {{trans "Your official quotation %number" number=$quote_data.quote_number}} @-->
+<!--@vars {
+"var quote_data.quote_number":"Quotation number",
+"var quote_data.contact_name":"Contact name",
+"var quote_data.organisation":"Organisation",
+"var quote_data.total":"Total inc VAT",
+"var quote_data.valid_until":"Valid until",
+"var view_url":"Quotation URL",
+"var items_html|raw":"Items rows"
+} @-->
+{{template config_path="design/email/header_template"}}
+
+<table>
+    <tr class="email-intro">
+        <td>
+            <p class="greeting">{{trans "Dear %name," name=$quote_data.contact_name}}</p>
+            <p>{{trans "Thank you for your request. Your official quotation %number for %organisation is ready." number=$quote_data.quote_number organisation=$quote_data.organisation}}</p>
+            <p>
+                <a href="{{var view_url}}" style="font-weight:bold">{{trans "View, print or save your quotation as PDF"}}</a>
+            </p>
+            <p>{{trans "Please quote %number on your purchase order. This quotation is valid until %date." number=$quote_data.quote_number date=$quote_data.valid_until}}</p>
+        </td>
+    </tr>
+    <tr class="email-information">
+        <td>
+            <table style="width:100%;border-collapse:collapse">
+                <thead>
+                <tr>
+                    <th style="text-align:left;padding:4px">{{trans "SKU"}}</th>
+                    <th style="text-align:left;padding:4px">{{trans "Product"}}</th>
+                    <th style="text-align:right;padding:4px">{{trans "Qty"}}</th>
+                    <th style="text-align:right;padding:4px">{{trans "Unit (ex VAT)"}}</th>
+                    <th style="text-align:right;padding:4px">{{trans "Total (ex VAT)"}}</th>
+                </tr>
+                </thead>
+                <tbody>
+                {{var items_html|raw}}
+                </tbody>
+            </table>
+            <table style="width:100%;margin-top:10px">
+                <tr><td style="text-align:right">{{trans "Goods subtotal (ex VAT)"}}</td><td style="text-align:right;width:120px">{{var quote_data.subtotal}}</td></tr>
+                <tr><td style="text-align:right">{{trans "Delivery (ex VAT)"}}</td><td style="text-align:right">{{var quote_data.delivery}}</td></tr>
+                <tr><td style="text-align:right">{{trans "VAT at %rate%" rate=$quote_data.vat_rate}}</td><td style="text-align:right">{{var quote_data.vat}}</td></tr>
+                <tr><td style="text-align:right"><strong>{{trans "Total (inc VAT)"}}</strong></td><td style="text-align:right"><strong>{{var quote_data.total}}</strong></td></tr>
+            </table>
+        </td>
+    </tr>
+</table>
+
+{{template config_path="design/email/footer_template"}}

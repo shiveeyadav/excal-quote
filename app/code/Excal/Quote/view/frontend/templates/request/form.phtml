@@ -1,0 +1,128 @@
+<?php
+/**
+ * Official quotation request form.
+ *
+ * @var \Magento\Framework\View\Element\Template $block
+ * @var \Magento\Framework\Escaper $escaper
+ * @var \Excal\Quote\ViewModel\RequestForm $viewModel
+ */
+$viewModel = $block->getData('view_model');
+$lines = $viewModel->getCartLines();
+$textFields = [
+    'organisation' => [__('Organisation'), true, 'text', 'organization', 255],
+    'department' => [__('Department / lab'), false, 'text', 'off', 255],
+    'contact_name' => [__('Contact name'), true, 'text', 'name', 255],
+    'email' => [__('Email'), true, 'email', 'email', 255],
+    'phone' => [__('Phone'), true, 'tel', 'tel', 64],
+];
+$areaFields = [
+    'billing_address' => [__('Billing / invoice address'), true, 2000],
+    'delivery_address' => [__('Delivery address'), true, 2000],
+];
+?>
+<div class="excal-quote-request">
+    <p class="excal-quote-intro">
+        <?= $escaper->escapeHtml(__(
+            'Fill in your details to receive an official quotation for the items in your basket. '
+            . 'You can print it or save it as PDF and use it to raise a purchase order. '
+            . 'Prices exclude VAT; VAT at %1 is shown separately. The quotation is valid for %2 days.',
+            $viewModel->getVatRateLabel(),
+            $viewModel->getValidityDays()
+        )) ?>
+    </p>
+
+    <div class="excal-quote-basket">
+        <h2><?= $escaper->escapeHtml(__('Items to be quoted')) ?></h2>
+        <table class="data table">
+            <thead>
+            <tr>
+                <th scope="col"><?= $escaper->escapeHtml(__('SKU')) ?></th>
+                <th scope="col"><?= $escaper->escapeHtml(__('Product')) ?></th>
+                <th scope="col" class="a-right"><?= $escaper->escapeHtml(__('Qty')) ?></th>
+            </tr>
+            </thead>
+            <tbody>
+            <?php foreach ($lines as $line): ?>
+                <tr>
+                    <td><?= $escaper->escapeHtml($line['sku']) ?></td>
+                    <td><?= $escaper->escapeHtml($line['name']) ?></td>
+                    <td class="a-right"><?= $escaper->escapeHtml($viewModel->formatQty($line['qty'])) ?></td>
+                </tr>
+            <?php endforeach; ?>
+            </tbody>
+        </table>
+        <a class="action" href="<?= $escaper->escapeUrl($viewModel->getCartUrl()) ?>">
+            <?= $escaper->escapeHtml(__('Edit basket')) ?>
+        </a>
+    </div>
+
+    <form class="form excal-quote-form" method="post" novalidate="novalidate"
+          action="<?= $escaper->escapeUrl($viewModel->getFormAction()) ?>"
+          data-mage-init='{"validation":{}}'>
+        <?= $block->getBlockHtml('formkey') ?>
+        <fieldset class="fieldset">
+            <legend class="legend"><span><?= $escaper->escapeHtml(__('Your details')) ?></span></legend>
+            <?php foreach ($textFields as $name => [$label, $required, $type, $autocomplete, $max]): ?>
+                <div class="field <?= $required ? 'required' : '' ?>">
+                    <label class="label" for="excal-quote-<?= $escaper->escapeHtmlAttr($name) ?>">
+                        <span><?= $escaper->escapeHtml($label) ?></span>
+                    </label>
+                    <div class="control">
+                        <input type="<?= $escaper->escapeHtmlAttr($type) ?>"
+                               id="excal-quote-<?= $escaper->escapeHtmlAttr($name) ?>"
+                               name="<?= $escaper->escapeHtmlAttr($name) ?>"
+                               value="<?= $escaper->escapeHtmlAttr($viewModel->getValue($name)) ?>"
+                               maxlength="<?= (int)$max ?>"
+                               autocomplete="<?= $escaper->escapeHtmlAttr($autocomplete) ?>"
+                               class="input-text<?= $type === 'email' ? ' validate-email' : '' ?>"
+                               <?= $required ? 'data-validate=\'{"required":true}\' aria-required="true"' : '' ?>/>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+            <?php foreach ($areaFields as $name => [$label, $required, $max]): ?>
+                <div class="field required">
+                    <label class="label" for="excal-quote-<?= $escaper->escapeHtmlAttr($name) ?>">
+                        <span><?= $escaper->escapeHtml($label) ?></span>
+                    </label>
+                    <div class="control">
+                        <textarea id="excal-quote-<?= $escaper->escapeHtmlAttr($name) ?>"
+                                  name="<?= $escaper->escapeHtmlAttr($name) ?>" rows="4"
+                                  maxlength="<?= (int)$max ?>"
+                                  class="input-text" data-validate='{"required":true}'
+                                  aria-required="true"><?= $escaper->escapeHtml($viewModel->getValue($name)) ?></textarea>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+            <div class="field">
+                <label class="label" for="excal-quote-customer_reference">
+                    <span><?= $escaper->escapeHtml(__('Your reference / PO number (optional)')) ?></span>
+                </label>
+                <div class="control">
+                    <input type="text" id="excal-quote-customer_reference" name="customer_reference"
+                           maxlength="128" class="input-text"
+                           value="<?= $escaper->escapeHtmlAttr($viewModel->getValue('customer_reference')) ?>"/>
+                </div>
+            </div>
+            <div class="field">
+                <label class="label" for="excal-quote-notes">
+                    <span><?= $escaper->escapeHtml(__('Notes (optional)')) ?></span>
+                </label>
+                <div class="control">
+                    <textarea id="excal-quote-notes" name="notes" rows="3" maxlength="4000"
+                              class="input-text"><?= $escaper->escapeHtml($viewModel->getValue('notes')) ?></textarea>
+                </div>
+            </div>
+            <div class="excal-quote-hp" aria-hidden="true">
+                <label for="excal-quote-website"><?= $escaper->escapeHtml(__('Leave this field empty')) ?></label>
+                <input type="text" id="excal-quote-website" name="website" value="" tabindex="-1" autocomplete="off"/>
+            </div>
+        </fieldset>
+        <div class="actions-toolbar">
+            <div class="primary">
+                <button type="submit" class="action submit primary">
+                    <span><?= $escaper->escapeHtml(__('Create my quotation')) ?></span>
+                </button>
+            </div>
+        </div>
+    </form>
+</div>

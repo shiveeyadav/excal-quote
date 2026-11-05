@@ -1,0 +1,174 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<listing xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Ui:etc/ui_configuration.xsd">
+    <argument name="data" xsi:type="array">
+        <item name="js_config" xsi:type="array">
+            <item name="provider" xsi:type="string">excal_quote_listing.excal_quote_listing_data_source</item>
+        </item>
+    </argument>
+    <settings>
+        <spinner>excal_quote_columns</spinner>
+        <deps>
+            <dep>excal_quote_listing.excal_quote_listing_data_source</dep>
+        </deps>
+    </settings>
+    <dataSource name="excal_quote_listing_data_source" component="Magento_Ui/js/grid/provider">
+        <settings>
+            <storageConfig>
+                <param name="indexField" xsi:type="string">entity_id</param>
+            </storageConfig>
+            <updateUrl path="mui/index/render"/>
+        </settings>
+        <aclResource>Excal_Quote::quotes</aclResource>
+        <dataProvider class="Magento\Framework\View\Element\UiComponent\DataProvider\DataProvider"
+                      name="excal_quote_listing_data_source">
+            <settings>
+                <requestFieldName>id</requestFieldName>
+                <primaryFieldName>entity_id</primaryFieldName>
+            </settings>
+        </dataProvider>
+    </dataSource>
+    <listingToolbar name="listing_top">
+        <settings>
+            <sticky>true</sticky>
+        </settings>
+        <bookmark name="bookmarks"/>
+        <columnsControls name="columns_controls"/>
+        <filters name="listing_filters"/>
+        <massaction name="listing_massaction">
+            <action name="status">
+                <settings>
+                    <type>status</type>
+                    <label translate="true">Change status</label>
+                    <actions>
+                        <action name="0">
+                            <type>open</type>
+                            <label translate="true">Open</label>
+                            <url path="excalquote/quote/massStatus">
+                                <param name="status">open</param>
+                            </url>
+                        </action>
+                        <action name="1">
+                            <type>converted</type>
+                            <label translate="true">Converted</label>
+                            <url path="excalquote/quote/massStatus">
+                                <param name="status">converted</param>
+                            </url>
+                        </action>
+                        <action name="2">
+                            <type>expired</type>
+                            <label translate="true">Expired</label>
+                            <url path="excalquote/quote/massStatus">
+                                <param name="status">expired</param>
+                            </url>
+                        </action>
+                    </actions>
+                </settings>
+            </action>
+        </massaction>
+        <paging name="listing_paging"/>
+    </listingToolbar>
+    <columns name="excal_quote_columns">
+        <selectionsColumn name="ids">
+            <settings>
+                <indexField>entity_id</indexField>
+            </settings>
+        </selectionsColumn>
+        <column name="entity_id" sortOrder="5">
+            <settings>
+                <filter>textRange</filter>
+                <label translate="true">ID</label>
+                <sorting>desc</sorting>
+                <visible>false</visible>
+            </settings>
+        </column>
+        <column name="quote_number" sortOrder="10">
+            <settings>
+                <filter>text</filter>
+                <label translate="true">Quotation #</label>
+            </settings>
+        </column>
+        <column name="created_at" class="Magento\Ui\Component\Listing\Columns\Date"
+                component="Magento_Ui/js/grid/columns/date" sortOrder="20">
+            <settings>
+                <filter>dateRange</filter>
+                <dataType>date</dataType>
+                <label translate="true">Created</label>
+            </settings>
+        </column>
+        <column name="organisation" sortOrder="30">
+            <settings>
+                <filter>text</filter>
+                <label translate="true">Organisation</label>
+            </settings>
+        </column>
+        <column name="department" sortOrder="35">
+            <settings>
+                <filter>text</filter>
+                <label translate="true">Department</label>
+                <visible>false</visible>
+            </settings>
+        </column>
+        <column name="contact_name" sortOrder="40">
+            <settings>
+                <filter>text</filter>
+                <label translate="true">Contact</label>
+            </settings>
+        </column>
+        <column name="email" sortOrder="50">
+            <settings>
+                <filter>text</filter>
+                <label translate="true">Email</label>
+            </settings>
+        </column>
+        <column name="phone" sortOrder="55">
+            <settings>
+                <filter>text</filter>
+                <label translate="true">Phone</label>
+                <visible>false</visible>
+            </settings>
+        </column>
+        <column name="customer_reference" sortOrder="60">
+            <settings>
+                <filter>text</filter>
+                <label translate="true">Customer ref / PO</label>
+            </settings>
+        </column>
+        <column name="subtotal" class="Magento\Sales\Ui\Component\Listing\Column\Price" sortOrder="65">
+            <settings>
+                <filter>textRange</filter>
+                <label translate="true">Subtotal (ex VAT)</label>
+                <visible>false</visible>
+            </settings>
+        </column>
+        <column name="grand_total" class="Magento\Sales\Ui\Component\Listing\Column\Price" sortOrder="70">
+            <settings>
+                <filter>textRange</filter>
+                <label translate="true">Total (inc VAT)</label>
+            </settings>
+        </column>
+        <column name="valid_until" class="Magento\Ui\Component\Listing\Columns\Date"
+                component="Magento_Ui/js/grid/columns/date" sortOrder="80">
+            <settings>
+                <filter>dateRange</filter>
+                <dataType>date</dataType>
+                <timezone>false</timezone>
+                <dateFormat>MMM d, y</dateFormat>
+                <label translate="true">Valid until</label>
+            </settings>
+        </column>
+        <column name="status" component="Magento_Ui/js/grid/columns/select" sortOrder="90">
+            <settings>
+                <filter>select</filter>
+                <options class="Excal\Quote\Model\Source\Status"/>
+                <dataType>select</dataType>
+                <label translate="true">Status</label>
+            </settings>
+        </column>
+        <actionsColumn name="actions" class="Excal\Quote\Ui\Component\Listing\Column\Actions" sortOrder="200">
+            <settings>
+                <indexField>entity_id</indexField>
+            </settings>
+        </actionsColumn>
+    </columns>
+</listing>

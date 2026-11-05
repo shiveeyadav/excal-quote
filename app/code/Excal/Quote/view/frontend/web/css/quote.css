@@ -1,0 +1,68 @@
+/* Excal_Quote - cart button, request form and printable A4 quotation */
+
+.excal-quote-cart-button { display: block; width: 100%; box-sizing: border-box; text-align: center; margin-top: 10px; }
+.excal-quote-cart-note { font-size: 12px; color: #555; margin: 6px 0 0; }
+.excal-quote-minicart-link { margin-top: 10px; text-align: center; }
+
+.excal-quote-request { max-width: 900px; }
+.excal-quote-basket table { margin-bottom: 8px; }
+.excal-quote-hp { position: absolute !important; left: -10000px; top: auto; width: 1px; height: 1px; overflow: hidden; }
+
+.excal-quote-notset { color: #c00; font-weight: 700; }
+
+.excal-quote-print-page .page-wrapper { background: #eee; }
+.excal-quote-toolbar { max-width: 210mm; margin: 16px auto 8px; display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+.excal-quote-toolbar-hint { font-size: 12px; color: #444; }
+
+.excal-quote-doc {
+    box-sizing: border-box; width: 210mm; min-height: 297mm; margin: 0 auto 24px; padding: 15mm;
+    background: #fff; color: #000; font-size: 10.5pt; line-height: 1.35; box-shadow: 0 0 6px rgba(0, 0, 0, .2);
+}
+.excal-quote-doc h1, .excal-quote-doc h2 { margin: 0 0 6px; font-weight: 700; }
+.excal-quote-doc h2 { font-size: 11pt; }
+.excal-quote-title { font-size: 20pt; letter-spacing: 1px; text-transform: uppercase; margin-top: 10mm !important; }
+.excal-quote-banner { border: 2px solid #333; padding: 6px 10px; margin-bottom: 8mm; font-weight: 700; }
+.excal-quote-banner-expired { border-color: #c00; color: #c00; }
+
+.excal-quote-head { display: flex; justify-content: space-between; gap: 10mm; }
+.excal-quote-logo img { max-height: 25mm; max-width: 70mm; }
+.excal-quote-supplier { text-align: right; font-size: 9.5pt; }
+.excal-quote-supplier-name { font-size: 13pt; font-weight: 700; }
+
+.excal-quote-meta table, .excal-quote-bank { border-collapse: collapse; margin: 4mm 0; }
+.excal-quote-meta th, .excal-quote-bank th { text-align: left; padding: 1px 12px 1px 0; font-weight: 600; }
+.excal-quote-meta td, .excal-quote-bank td { padding: 1px 0; }
+
+.excal-quote-parties { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 6mm; margin: 6mm 0; }
+
+.excal-quote-items { width: 100%; border-collapse: collapse; margin: 4mm 0 6mm; }
+.excal-quote-items th, .excal-quote-items td { border-bottom: 1px solid #bbb; padding: 4px 6px; vertical-align: top; text-align: left; }
+.excal-quote-items thead th { background: #f0f0f0; border-bottom: 2px solid #000; }
+.excal-quote-items .num { text-align: right; white-space: nowrap; }
+.excal-quote-items tfoot th { text-align: right; font-weight: 600; border-bottom: none; }
+.excal-quote-items tfoot td { border-bottom: none; }
+.excal-quote-items tfoot .grand th, .excal-quote-items tfoot .grand td { border-top: 2px solid #000; font-size: 12pt; font-weight: 700; }
+
+.excal-quote-notes, .excal-quote-ordering, .excal-quote-terms { margin: 5mm 0; }
+.excal-quote-terms div { font-size: 8.5pt; }
+.excal-quote-foot { margin-top: 8mm; padding-top: 3mm; border-top: 1px solid #999; font-size: 8pt; color: #333; text-align: center; }
+
+@media print {
+    @page { size: A4; margin: 12mm; }
+    html, body, .excal-quote-print-page .page-wrapper { background: #fff !important; }
+    .no-print, .excal-quote-toolbar, .page.messages, .message.global, .cookie-status-message,
+    #notice-cookie-block, .page-header, .page-footer, .nav-sections, .breadcrumbs, .copyright { display: none !important; }
+    .page-main, .columns, .column.main { padding: 0 !important; margin: 0 !important; max-width: none !important; width: auto !important; }
+    .excal-quote-doc { width: auto; min-height: 0; margin: 0; padding: 0; box-shadow: none; }
+    .excal-quote-items tr, .excal-quote-bank tr { page-break-inside: avoid; }
+    .excal-quote-items thead { display: table-header-group; }
+    .excal-quote-items tfoot { display: table-row-group; }
+    .excal-quote-notset { color: #c00 !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    a[href]:after { content: none !important; }
+}
+
+@media screen and (max-width: 800px) {
+    .excal-quote-doc { width: auto; min-height: 0; padding: 12px; }
+    .excal-quote-head, .excal-quote-parties { display: block; }
+    .excal-quote-supplier { text-align: left; margin-top: 8px; }
+}

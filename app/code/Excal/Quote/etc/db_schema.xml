@@ -1,0 +1,70 @@
+<?xml version="1.0"?>
+<schema xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:framework:Setup/Declaration/Schema/etc/schema.xsd">
+    <table name="excal_quote" resource="default" engine="innodb" comment="Excalibur official quotations">
+        <column xsi:type="int" name="entity_id" unsigned="true" nullable="false" identity="true" comment="Entity ID"/>
+        <column xsi:type="varchar" name="quote_number" nullable="true" length="32" comment="Quote number EXQ-YYYY-000123"/>
+        <column xsi:type="varchar" name="hash" nullable="false" length="64" comment="Unguessable public hash"/>
+        <column xsi:type="varchar" name="status" nullable="false" length="16" default="open" comment="open/converted/expired"/>
+        <column xsi:type="smallint" name="store_id" unsigned="true" nullable="false" identity="false" default="0" comment="Store ID"/>
+        <column xsi:type="int" name="customer_id" unsigned="true" nullable="true" identity="false" comment="Customer ID"/>
+        <column xsi:type="int" name="source_cart_id" unsigned="true" nullable="true" identity="false" comment="Source cart (quote) ID"/>
+        <column xsi:type="varchar" name="organisation" nullable="false" length="255" comment="Organisation"/>
+        <column xsi:type="varchar" name="department" nullable="true" length="255" comment="Department"/>
+        <column xsi:type="varchar" name="contact_name" nullable="false" length="255" comment="Contact name"/>
+        <column xsi:type="varchar" name="email" nullable="false" length="255" comment="Email"/>
+        <column xsi:type="varchar" name="phone" nullable="false" length="64" comment="Phone"/>
+        <column xsi:type="text" name="billing_address" nullable="false" comment="Billing address"/>
+        <column xsi:type="text" name="delivery_address" nullable="false" comment="Delivery address"/>
+        <column xsi:type="varchar" name="customer_reference" nullable="true" length="128" comment="Customer reference / PO"/>
+        <column xsi:type="text" name="notes" nullable="true" comment="Customer notes"/>
+        <column xsi:type="varchar" name="currency_code" nullable="false" length="3" default="GBP" comment="Currency"/>
+        <column xsi:type="decimal" name="subtotal" scale="4" precision="20" unsigned="false" nullable="false" default="0" comment="Goods subtotal ex VAT"/>
+        <column xsi:type="decimal" name="delivery_amount" scale="4" precision="20" unsigned="false" nullable="false" default="0" comment="Delivery ex VAT"/>
+        <column xsi:type="decimal" name="vat_rate" scale="4" precision="12" unsigned="false" nullable="false" default="0" comment="VAT rate percent"/>
+        <column xsi:type="decimal" name="vat_amount" scale="4" precision="20" unsigned="false" nullable="false" default="0" comment="VAT amount"/>
+        <column xsi:type="decimal" name="grand_total" scale="4" precision="20" unsigned="false" nullable="false" default="0" comment="Total inc VAT"/>
+        <column xsi:type="date" name="valid_until" nullable="false" comment="Valid until (store local date)"/>
+        <column xsi:type="timestamp" name="created_at" on_update="false" nullable="false" default="CURRENT_TIMESTAMP" comment="Created at"/>
+        <column xsi:type="timestamp" name="updated_at" on_update="true" nullable="false" default="CURRENT_TIMESTAMP" comment="Updated at"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="entity_id"/>
+        </constraint>
+        <constraint xsi:type="unique" referenceId="EXCAL_QUOTE_HASH">
+            <column name="hash"/>
+        </constraint>
+        <constraint xsi:type="unique" referenceId="EXCAL_QUOTE_QUOTE_NUMBER">
+            <column name="quote_number"/>
+        </constraint>
+        <index referenceId="EXCAL_QUOTE_STATUS_VALID_UNTIL" indexType="btree">
+            <column name="status"/>
+            <column name="valid_until"/>
+        </index>
+        <index referenceId="EXCAL_QUOTE_CREATED_AT" indexType="btree">
+            <column name="created_at"/>
+        </index>
+        <index referenceId="EXCAL_QUOTE_EMAIL" indexType="btree">
+            <column name="email"/>
+        </index>
+    </table>
+    <table name="excal_quote_item" resource="default" engine="innodb" comment="Excalibur official quotation items">
+        <column xsi:type="int" name="item_id" unsigned="true" nullable="false" identity="true" comment="Item ID"/>
+        <column xsi:type="int" name="quote_id" unsigned="true" nullable="false" identity="false" comment="Quotation ID"/>
+        <column xsi:type="int" name="product_id" unsigned="true" nullable="true" identity="false" comment="Product ID"/>
+        <column xsi:type="varchar" name="sku" nullable="false" length="64" comment="SKU"/>
+        <column xsi:type="varchar" name="name" nullable="false" length="255" comment="Product name"/>
+        <column xsi:type="decimal" name="qty" scale="4" precision="12" unsigned="false" nullable="false" default="0" comment="Qty"/>
+        <column xsi:type="decimal" name="unit_price" scale="4" precision="20" unsigned="false" nullable="false" default="0" comment="Unit price ex VAT"/>
+        <column xsi:type="decimal" name="line_total" scale="4" precision="20" unsigned="false" nullable="false" default="0" comment="Line total ex VAT"/>
+        <column xsi:type="smallint" name="sort_order" unsigned="true" nullable="false" identity="false" default="0" comment="Sort order"/>
+        <constraint xsi:type="primary" referenceId="PRIMARY">
+            <column name="item_id"/>
+        </constraint>
+        <constraint xsi:type="foreign" referenceId="EXCAL_QUOTE_ITEM_QUOTE_ID_EXCAL_QUOTE_ENTITY_ID"
+                    table="excal_quote_item" column="quote_id" referenceTable="excal_quote"
+                    referenceColumn="entity_id" onDelete="CASCADE"/>
+        <index referenceId="EXCAL_QUOTE_ITEM_QUOTE_ID" indexType="btree">
+            <column name="quote_id"/>
+        </index>
+    </table>
+</schema>

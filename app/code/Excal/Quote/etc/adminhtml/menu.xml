@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
+    <menu>
+        <add id="Excal_Quote::quotes" title="Official Quotations" translate="title" module="Excal_Quote"
+             sortOrder="60" parent="Magento_Sales::sales_operation" action="excalquote/quote/index"
+             resource="Excal_Quote::quotes"/>
+    </menu>
+</config>

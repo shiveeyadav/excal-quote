@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<page xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+      xsi:noNamespaceSchemaLocation="urn:magento:framework:View/Layout/etc/page_configuration.xsd">
+    <head>
+        <css src="Excal_Quote::css/quote.css"/>
+    </head>
+    <body>
+        <referenceContainer name="checkout.cart.methods">
+            <block class="Magento\Framework\View\Element\Template" name="excal.quote.cart.button"
+                   template="Excal_Quote::cart/button.phtml" after="checkout.cart.methods.onepage.bottom">
+                <arguments>
+                    <argument name="view_model" xsi:type="object">Excal\Quote\ViewModel\Button</argument>
+                </arguments>
+            </block>
+        </referenceContainer>
+    </body>
+</page>

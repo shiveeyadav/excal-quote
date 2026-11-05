@@ -1,0 +1,18 @@
+<?php
+/**
+ * Mini-cart: optional "Get an official quotation" link.
+ *
+ * @var \Magento\Framework\View\Element\Template $block
+ * @var \Magento\Framework\Escaper $escaper
+ * @var \Excal\Quote\ViewModel\Button $viewModel
+ */
+$viewModel = $block->getData('view_model');
+if (!$viewModel->isMinicartLinkEnabled()) {
+    return;
+}
+?>
+<div class="excal-quote-minicart-link">
+    <a href="<?= $escaper->escapeUrl($viewModel->getRequestUrl()) ?>">
+        <?= $escaper->escapeHtml(__('Get an official quotation')) ?>
+    </a>
+</div>

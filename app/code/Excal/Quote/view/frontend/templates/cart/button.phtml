@@ -1,0 +1,21 @@
+<?php
+/**
+ * Basket page: "Get an official quotation" button.
+ *
+ * @var \Magento\Framework\View\Element\Template $block
+ * @var \Magento\Framework\Escaper $escaper
+ * @var \Excal\Quote\ViewModel\Button $viewModel
+ */
+$viewModel = $block->getData('view_model');
+if (!$viewModel->isEnabled()) {
+    return;
+}
+?>
+<a class="action secondary excal-quote-cart-button"
+   href="<?= $escaper->escapeUrl($viewModel->getRequestUrl()) ?>"
+   title="<?= $escaper->escapeHtmlAttr(__('Get an official quotation')) ?>">
+    <span><?= $escaper->escapeHtml(__('Get an official quotation')) ?></span>
+</a>
+<p class="excal-quote-cart-note">
+    <?= $escaper->escapeHtml(__('For universities, NHS and public labs: a printable supplier quotation for your purchase order.')) ?>
+</p>

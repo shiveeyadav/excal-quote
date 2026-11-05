@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Email:etc/email_templates.xsd">
+    <template id="excal_quote_general_customer_template" label="Official Quotation (customer)"
+              file="quote_customer.html" type="html" module="Excal_Quote" area="frontend"/>
+    <template id="excal_quote_general_owner_template" label="Official Quotation (owner copy)"
+              file="quote_owner.html" type="html" module="Excal_Quote" area="frontend"/>
+</config>
