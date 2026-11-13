@@ -10,6 +10,7 @@ use Excal\Quote\Model\Config;
 use Excal\Quote\Model\FormValidator;
 use Excal\Quote\Model\Mailer;
 use Excal\Quote\Model\QuoteCreator;
+use Excal\Quote\Model\RequestThrottle;
 use Excal\Quote\Model\UrlProvider;
 use Magento\Checkout\Model\Session as CheckoutSession;
 use Magento\Customer\Model\Session as CustomerSession;
@@ -48,6 +49,7 @@ class Save implements HttpPostActionInterface
      * @param RedirectFactory $redirectFactory
      * @param ManagerInterface $messageManager
      * @param LoggerInterface $logger
+     * @param RequestThrottle $throttle
      */
     public function __construct(
         private readonly RequestInterface $request,
@@ -63,7 +65,8 @@ class Save implements HttpPostActionInterface
         private readonly ForwardFactory $forwardFactory,
         private readonly RedirectFactory $redirectFactory,
         private readonly ManagerInterface $messageManager,
-        private readonly LoggerInterface $logger
+        private readonly LoggerInterface $logger,
+        private readonly RequestThrottle $throttle
     ) {
     }
 
@@ -98,9 +101,11 @@ class Save implements HttpPostActionInterface
             return $back;
         }
 
-        if (!$this->checkRateLimit()) {
+        if (!$this->checkRateLimit()
+            || !$this->throttle->isAllowed((string)($data['email'] ?? ''), $this->config->getMaxPerHour())
+        ) {
             $this->messageManager->addErrorMessage(
-                __('Too many quotation requests from this session. Please try again later or contact us.')
+                __('Too many quotation requests. Please try again later or contact us.')
             );
             $this->dataPersistor->set(self::PERSIST_KEY, $data);
             return $back;
@@ -127,6 +132,7 @@ class Save implements HttpPostActionInterface
 
         $this->dataPersistor->clear(self::PERSIST_KEY);
         $this->recordRequest();
+        $this->throttle->record((string)$quote->getData('email'));
 
         if ($this->mailer->sendAll($quote)) {
             $this->messageManager->addSuccessMessage(__(
