@@ -66,3 +66,8 @@
     .excal-quote-head, .excal-quote-parties { display: block; }
     .excal-quote-supplier { text-align: left; margin-top: 8px; }
 }
+
+/* Product page hint */
+.excal-quote-product-hint { margin: 12px 0 0; padding: 10px 12px; border-left: 3px solid #1979c3; background: #f5f8fb; font-size: 1.3rem; line-height: 1.5; }
+.excal-quote-product-hint strong { display: block; margin-bottom: 2px; }
+@media print { .excal-quote-product-hint { display: none; } }

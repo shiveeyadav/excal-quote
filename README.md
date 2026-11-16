@@ -4,6 +4,9 @@ Magento 2.4.8 Open Source module. It works like LabFriend's "Instant Quote": a u
 turns its basket into an official supplier quotation and uses that quotation to raise a purchase order.
 
 - Basket page: **Get an official quotation** button. A mini-cart link is optional (off by default).
+- Site-wide entry points (only when the module is enabled): an **Official quotations** link in the header and in
+  the footer, and a short hint under *Add to Cart* on every product page. Each points to `/quote/request`, which
+  sends shoppers with an empty basket to the basket page with a short explanation.
 - `/quote/request`: form with organisation, department, contact name, email, phone, billing address, delivery
   address, optional customer reference/PO, and notes. Logged-in customers get it prefilled. The form has a form key,
   a hidden honeypot, server-side validation and a per-session hourly limit.

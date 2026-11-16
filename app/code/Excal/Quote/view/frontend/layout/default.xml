@@ -10,5 +10,23 @@
                 </arguments>
             </block>
         </referenceContainer>
+        <referenceBlock name="header.links">
+            <block class="Magento\Framework\View\Element\Html\Link\Current" name="excal.quote.header.link"
+                   ifconfig="excal_quote/general/enabled" after="-">
+                <arguments>
+                    <argument name="label" xsi:type="string" translate="true">Official quotations</argument>
+                    <argument name="path" xsi:type="string">quote/request</argument>
+                </arguments>
+            </block>
+        </referenceBlock>
+        <referenceBlock name="footer_links">
+            <block class="Magento\Framework\View\Element\Html\Link\Current" name="excal.quote.footer.link"
+                   ifconfig="excal_quote/general/enabled">
+                <arguments>
+                    <argument name="label" xsi:type="string" translate="true">Official quotations</argument>
+                    <argument name="path" xsi:type="string">quote/request</argument>
+                </arguments>
+            </block>
+        </referenceBlock>
     </body>
 </page>

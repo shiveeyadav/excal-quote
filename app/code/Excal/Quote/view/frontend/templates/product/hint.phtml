@@ -1,0 +1,18 @@
+<?php
+/**
+ * Product page: tells public-sector buyers they can get an official quotation for a purchase order.
+ *
+ * @var \Magento\Framework\View\Element\Template $block
+ * @var \Magento\Framework\Escaper $escaper
+ * @var \Excal\Quote\ViewModel\Button $viewModel
+ */
+$viewModel = $block->getData('view_model');
+if (!$viewModel->isEnabled()) {
+    return;
+}
+?>
+<div class="excal-quote-product-hint">
+    <strong><?= $escaper->escapeHtml(__('Need a quotation for a purchase order?')) ?></strong>
+    <span><?= $escaper->escapeHtml(__('Add this item to your basket, then choose')) ?></span>
+    <a href="<?= $escaper->escapeUrl($viewModel->getRequestUrl()) ?>"><?= $escaper->escapeHtml(__('Get an official quotation')) ?></a>.
+</div>
