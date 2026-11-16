@@ -95,7 +95,9 @@ Go to **Stores > Configuration > Excalibur > Quotations**.
    - *Send Owner Copy To*: leave empty to use the supplier email.
    - *Email Sender*: a store email identity. Check **Stores > Configuration > General > Store Email Addresses** is
      set up.
-   - Templates and the hourly limit (default 5 per session, 0 = unlimited).
+   - Templates and the hourly limit (default 5, 0 = unlimited). It applies per browser session and per customer
+     email address; each client IP gets 4x that (at least 20/hour) so customers behind a shared IP aren't blocked.
+     The counters live in Magento's cache, so `cache:flush` resets them.
    - Then set *Enable Official Quotations* = Yes and, if wanted, *Show Link in Mini-cart* = Yes.
 4. `sudo -u www-data php bin/magento cache:flush`
 
